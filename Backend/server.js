@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/auth.routes.js";
+import path from "path";
 const app = express()
 const port = process.env.PORT || 3000
 app.use(express.json())
@@ -16,6 +17,22 @@ app.use(cors({
   }
 ))
 app.use("/api/auth", authRoutes)
+
+
+
+
+
+
+const staticPath = path.join(__dirname, "../Frontend/dist");
+app.use(express.static(staticPath));
+
+app.get("*", (req, res) => {
+  const indexPath = path.join(__dirname, "../Frontend/dist/index.html");
+  res.sendFile(indexPath);
+});
+
+
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 }
