@@ -23,17 +23,15 @@ app.use(cors({
 app.use("/api/auth", authRoutes)
 
 
-
-
-
-
 const staticPath = path.join(__dirname, "../Frontend/dist");
+console.log("Serving static files from:", staticPath);
 app.use(express.static(staticPath));
-
-app.get("*", (req, res) => {
+app.use((req, res) => {
   const indexPath = path.join(__dirname, "../Frontend/dist/index.html");
+  console.log("Serving index.html for:", req.url);
   res.sendFile(indexPath);
 });
+
 
 
 
