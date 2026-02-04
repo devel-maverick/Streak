@@ -1,6 +1,7 @@
 import prisma from "../config/db.js"
 import GenerateToken from "../utils/GenerateToken.js"
 import bcrypt from "bcrypt"
+import axios from "axios"
 import { isValidName, isValidEmail, isValidPassword } from "../utils/validator.js"
 export const Register = async (req, res) => {
     try {
@@ -79,3 +80,71 @@ export const Me = async (req, res) => {
         res.status(500).json({ message: err.message })
     }
 }
+
+
+
+{/* Google Oauth */ }
+
+export const googleAuthRedirect = (req, res) => {
+    const url =
+        "https://accounts.google.com/o/oauth2/v2/auth?" +
+        new URLSearchParams({
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            redirect_uri: process.env.GOOGLE_CALLBACK_URL,
+            response_type: "code",
+            scope: "openid email profile",
+        });
+
+    res.redirect(url);
+};
+
+export const googleCallback = async (req, res) => {
+    try {
+        const { code } = req.query;
+        if (!code) {
+            return res.status(400).json({ message: "Authorization code not found" })
+        }
+        const tokenRes = await axios.post("https://oauth2.googleapis.com/token", {
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            code,
+            redirect_uri: process.env.GOOGLE_CALLBACK_URL,
+            grant_type: "authorization_code",
+        });
+
+        const { access_token } = tokenRes.data;
+
+        const profileRes = await axios.get(
+            "https://www.googleapis.com/oauth2/v2/userinfo",
+            {
+                headers: { Authorization: `Bearer ${access_token}` },
+            }
+        );
+
+        const { email, name, picture, id } = profileRes.data;
+
+        let user = await prisma.user.findUnique({ where: { email } });
+
+        if (!user) {
+            user = await prisma.user.create({
+                data: {
+                    email,
+                    name,
+                    avatar: picture,
+                    googleId: id,
+                    authProvider: "GOOGLE",
+                },
+            });
+        }
+
+        const token = GenerateToken(user, res);
+        console.log(token)
+        res.redirect(
+            `${process.env.FRONTEND_URL}/oauth-success?token=${token}`
+        );
+    } catch (err) {
+        console.error("Google OAuth Error:", err.message);
+        res.status(500).json({ message: "Google OAuth failed" });
+    }
+};
+
