@@ -1,11 +1,15 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-const app=express()
-const port=3000
+import cookieParser from "cookie-parser";
+import authRoutes from "./src/routes/auth.routes.js";
+const app = express()
+const port = process.env.PORT || 3000
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors())
-app.listen(port,()=>{
+app.use("/api/auth", authRoutes)
+app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 }
 )
