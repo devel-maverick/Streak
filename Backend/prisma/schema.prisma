@@ -11,6 +11,18 @@ enum AuthProvider{
   LOCAL
   GOOGLE
 }
+enum Platform{
+  LEETCODE
+  CODEFORCES
+  CODECHEF
+  ATCODER
+  CSES
+}
+enum Difficulty{
+  EASY
+  MEDIUM
+  HARD
+}
 
 model User {
   id                 String    @id @default(uuid())
@@ -33,4 +45,53 @@ model User {
   solvedCses          Int              @default(0)
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
+
+  solvedProblems      SolvedProblem[]
+}
+
+model Problem{
+  id                 String    @id @default(uuid())
+  title              String
+  platform           Platform
+  problemId          String
+  url                String
+  frequency          Float?
+  acceptance         Float?
+  difficulty         Difficulty
+  topics             String[]  @default([])
+  companies          String[]  @default([])
+  description        String    @default("")
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  samples            sampleIO[]
+  solvedBy           SolvedProblem[]
+
+  @@unique([platform, problemId])
+  @@index([platform])
+  @@index([difficulty])
+}
+
+
+model sampleIO{
+  id                 String    @id @default(uuid())
+  input              String
+  output             String
+  explanation        String?
+  problemId          String
+  problem            Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model SolvedProblem{
+  id                 String    @id @default(uuid())
+  userId             String
+  problemId          String
+  solvedAt           DateTime  @default(now())
+
+  user               User      @relation(fields: [userId],references:[id],onDelete:Cascade)
+  problem            Problem   @relation(fields:[problemId],references:[id],onDelete:Cascade)
+
+  @@unique([userId, problemId])
+
 }
