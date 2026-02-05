@@ -1,42 +1,45 @@
+export const getPracticeProblems = async (req, res) => {
+  try {
+    let { platform, limit, page } = req.query;
 
-export const listProblems=async(req,res)=>{
-    try{
-        let {platform,company,limit,page}=req.query
-        page=parseInt(page)
-        if(!page||page<1) page=1
+    page = parseInt(page);
+    if (!page || page < 1) page = 1;
 
-        limit=parseInt(limit)
-        if(!limit||limit<1) limit=10
-        if(limit>50) limit=50
+    limit = parseInt(limit);
+    if (!limit || limit < 1) limit = 10;
+    if (limit > 50) limit = 50;
 
-        const skip=(page-1)*limit
-        const where={}
-        if(platform) where.platform=platform
-        if(company) where.companies={has:company}
+    const skip = (page - 1) * limit;
 
-        const problems=await prisma.problem.findMany({
-            where,
-            skip,
-            take:limit,
-            orderBy:{createdAt:'desc'}
-        })
-        const total=await prisma.problem.count({where})
-        const totalPages=Math.ceil(total/limit)
-        res.json({
-            data:problems,
-            meta:{
-                page,
-                limit,
-                total,
-                totalPages
-            }
-        })
-    }catch(err){
-        console.log(err)
-        res.status(500).json({message:'Failed to fetch problems'})
-    }
-}
+    const where = {
+      companies: { isEmpty: true },
+    };
 
+    if (platform) where.platform = platform;
+
+    const problems = await prisma.problem.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    });
+
+    const total = await prisma.problem.count({ where });
+
+    res.json({
+      data: problems,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch practice problems" });
+  }
+};
 
 
 export const getById = async (req, res) => {
@@ -56,80 +59,89 @@ export const getById = async (req, res) => {
 };
 
 
-export const getByPlatform=async(req,res)=>{
-    try{
-        const {platform}=req.params
-        let {limit,page}=req.query
-        page=parseInt(page)
-        if(!page||page<1) page=1
+export const getPracticeByPlatform = async (req, res) => {
+  try {
+    const { platform } = req.params;
+    let { limit, page } = req.query;
 
-        limit=parseInt(limit)
-        if(!limit||limit<1) limit=10
-        if(limit>50) limit=50
+    page = parseInt(page);
+    if (!page || page < 1) page = 1;
 
-        const skip=(page-1)*limit
-        const where={}
-        if(platform) where.platform=platform
+    limit = parseInt(limit);
+    if (!limit || limit < 1) limit = 10;
+    if (limit > 50) limit = 50;
 
-        const problems=await prisma.problem.findMany({
-            where,
-            skip,
-            take:limit,
-            orderBy:{createdAt:'desc'}
-        })
-        const total=await prisma.problem.count({where})
-        const totalPages=Math.ceil(total/limit)
-        res.json({
-            data:problems,
-            meta:{
-                page,
-                limit,
-                total,
-                totalPages
-            }
-        })
-    }catch(err){
-        console.log(err)
-        res.status(500).json({message:'Failed to fetch problems'})
-    }
-}
+    const skip = (page - 1) * limit;
 
-export const getByCompany=async(req,res)=>{
-    try{
-        const {company}=req.params
-        let {limit,page}=req.query
-        page=parseInt(page)
-        if(!page||page<1) page=1
+    const where = {
+      platform,
+      companies: { isEmpty: true },
+    };
 
-        limit=parseInt(limit)
-        if(!limit||limit<1) limit=10
-        if(limit>50) limit=50
+    const problems = await prisma.problem.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    });
 
-        const skip=(page-1)*limit
-        const where={}
-        if(company) where.companies={has:company}
+    const total = await prisma.problem.count({ where });
 
-        const problems=await prisma.problem.findMany({
-            where,
-            skip,
-            take:limit,
-            orderBy:{createdAt:'desc'}
-        })
-        const total=await prisma.problem.count({where})
-        const totalPages=Math.ceil(total/limit)
-        res.json({
-            data:problems,
-            meta:{
-                page,
-                limit,
-                total,
-                totalPages
-            }
-        })
-    }catch(err){
-        console.log(err)
-        res.status(500).json({message:'Failed to fetch problems'})
-    }
-}
+    res.json({
+      data: problems,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch practice problems" });
+  }
+};
 
+export const getByCompany = async (req, res) => {
+  try {
+    const { company } = req.params;
+    let { limit, page } = req.query;
+
+    page = parseInt(page);
+    if (!page || page < 1) page = 1;
+
+    limit = parseInt(limit);
+    if (!limit || limit < 1) limit = 10;
+    if (limit > 50) limit = 50;
+
+    const skip = (page - 1) * limit;
+
+    const where = {
+      platform: "LEETCODE",
+      companies: { has: company.toLowerCase() },
+    };
+
+    const problems = await prisma.problem.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    });
+
+    const total = await prisma.problem.count({ where });
+
+    res.json({
+      data: problems,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch company problems" });
+  }
+};
 
