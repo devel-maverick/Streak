@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/auth.routes.js";
 import problemRoutes from "./src/routes/problem.routes.js";
+import solvedRoutes from "./src/routes/solved.routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -22,6 +23,7 @@ app.use(cors({
 ))
 app.use("/api/auth", authRoutes)
 app.use("/api/problems", problemRoutes)
+app.use("/api/solved", solvedRoutes);
 
 const staticPath = path.join(__dirname, "../Frontend/dist");
 app.use(express.static(staticPath));
