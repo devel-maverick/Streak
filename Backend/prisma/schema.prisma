@@ -23,6 +23,11 @@ enum Difficulty{
   MEDIUM
   HARD
 }
+enum Phase{
+  BEFORE
+  CODING
+  ENDED
+}
 
 model User {
   id                 String    @id @default(uuid())
@@ -57,7 +62,7 @@ model Problem{
   url                String
   frequency          Float?
   acceptance         Float?
-  difficulty         Difficulty
+  difficulty         Difficulty?
   topics             String[]  @default([])
   companies          String[]  @default([])
   description        String    @default("")
@@ -95,3 +100,21 @@ model SolvedProblem{
   @@unique([userId, problemId])
 
 }
+
+
+model Contest{
+  id                 String    @id @default(uuid())
+  title              String
+  platform           Platform
+  contestId          String
+  startTime          DateTime
+  endTime            DateTime
+  duration           Int
+  phase              Phase
+  url                String
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  @@unique([platform,contestId])
+}
+
+

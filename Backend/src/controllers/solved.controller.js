@@ -1,4 +1,4 @@
-
+import prisma from "../config/db.js"
 export const markSolved=async(req,res)=>{
 
     try{
