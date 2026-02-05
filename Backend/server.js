@@ -3,9 +3,9 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/auth.routes.js";
+import problemRoutes from "./src/routes/problem.routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express()
@@ -21,14 +21,12 @@ app.use(cors({
   }
 ))
 app.use("/api/auth", authRoutes)
-
+app.use("/api/problems", problemRoutes)
 
 const staticPath = path.join(__dirname, "../Frontend/dist");
-console.log("Serving static files from:", staticPath);
 app.use(express.static(staticPath));
 app.use((req, res) => {
   const indexPath = path.join(__dirname, "../Frontend/dist/index.html");
-  console.log("Serving index.html for:", req.url);
   res.sendFile(indexPath);
 });
 
