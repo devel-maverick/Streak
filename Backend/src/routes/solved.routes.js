@@ -1,4 +1,4 @@
-import { Protected } from "../middleware/auth";
+import { Protected } from "../middleware/auth.js";
 import express from "express";
 import { markSolved, getSolved } from "../controllers/solved.controller.js"
 

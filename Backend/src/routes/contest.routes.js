@@ -1,7 +1,7 @@
 import express from "express";
-import { getAllContests,importContests } from "../controllers/contest.controller";
-import { protect } from "../middleware/auth.js";
+import { getAllContests,importContests } from "../controllers/contest.controller.js";
+import { Protected } from "../middleware/auth.js";
 const router = express.Router();
-router.get("/", getAllContests);
-router.post("/import", protect, importContests);
+router.get("/",Protected,getAllContests);
+router.post("/import", Protected, importContests);
 export default router;

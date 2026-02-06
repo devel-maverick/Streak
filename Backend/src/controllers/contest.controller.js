@@ -38,7 +38,6 @@ export const getAllContests = async (req, res) => {
     }
 }
 
-
 export const importContests=async(req,res)=>{
     try{
         const {platform}=req.body
@@ -98,7 +97,7 @@ export const importContests=async(req,res)=>{
     }
 }
 
-const updateContestPhase=async()=>{
+export const updateContestPhase=async()=>{
     try{
         const now=new Date()
         const contests=await prisma.contest.findMany({
