@@ -7,6 +7,7 @@ import authRoutes from "./src/routes/auth.routes.js";
 import problemRoutes from "./src/routes/problem.routes.js";
 import solvedRoutes from "./src/routes/solved.routes.js";
 import contestRoutes from "./src/routes/contest.routes.js";
+import playgroundRoutes from "./src/routes/playground.routes.js";
 import { inngest } from "./src/inngest/client.js";
 import { alljobs } from "./src/inngest/functions.js";
 import path from "path";
@@ -37,7 +38,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api/problems", problemRoutes)
 app.use("/api/solved", solvedRoutes);
 app.use("/api/contests", contestRoutes);
-
+app.use("/api/playground",playgroundRoutes)
 const staticPath = path.join(__dirname, "../Frontend/dist");
 app.use(express.static(staticPath));
 app.use((req, res) => {
