@@ -29,6 +29,11 @@ enum Phase{
   ENDED
 }
 
+enum AIMessageRole {
+  user
+  ai
+}
+
 model User {
   id                 String    @id @default(uuid())
   name               String
@@ -53,6 +58,7 @@ model User {
 
   solvedProblems      SolvedProblem[]
   codeDrafts          CodeDraft[]
+  aiMessages          AIMessage[]
 }
 
 model Problem{
@@ -74,6 +80,7 @@ model Problem{
   samples            sampleIO[]
   solvedBy           SolvedProblem[]
   codeDrafts         CodeDraft[]
+  aiMessages          AIMessage[]
 
   @@unique([platform, problemId])
   @@index([platform])
@@ -126,9 +133,9 @@ model CodeDraft{
   userId             String
   language           String
   problemId         String?
-  code               String
-  input              String?
-  output             String?
+  code               String     @default("")
+  input              String     @default("")
+  output             String     @default("")
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 
@@ -136,3 +143,19 @@ model CodeDraft{
   problem            Problem?  @relation(fields:[problemId],references:[id],onDelete:SetNull)
 
 }
+
+
+model AIMessage{
+  id                 String    @id @default(uuid())
+  userId             String
+  problemId          String?
+  message            String
+  role               AIMessageRole
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  user               User      @relation(fields:[userId],references:[id],onDelete:Cascade)
+  problem            Problem?  @relation(fields:[problemId],references:[id],onDelete:SetNull)
+}
+
+
