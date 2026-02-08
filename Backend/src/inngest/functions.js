@@ -4,7 +4,7 @@ import { importContests, updateContestPhase } from "../controllers/contest.contr
 export const importContestsJob = inngest.createFunction(
     {
         id: "fetch-contests",
-        name: "Fetch Contests from All Platforms",
+        name: "Fetch Contests from Codeforces",
         concurrency: { limit: 1 },
     },
     {
