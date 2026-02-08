@@ -1,100 +1,100 @@
-import { validateRequiredFields,isValidLanguage } from "../utils/validator.js";
-import {runCode} from "../services/judge0.service.js";
+import { validateRequiredFields, isValidLanguage } from "../utils/validator.js";
+import { runCode } from "../../services/judge0.service.js";
 
-export const run=async(req,res)=>{
-    try{
-        const {code,language,input}=req.body
-        const missing=validateRequiredFields(["code","language"],req.body)
-        if(missing.length>0){
-            return res.status(400).json({message:`Missing required fields: ${missing.join(", ")}`})
+export const run = async (req, res) => {
+    try {
+        const { code, language, input } = req.body
+        const missing = validateRequiredFields(["code", "language"], req.body)
+        if (missing.length > 0) {
+            return res.status(400).json({ message: `Missing required fields: ${missing.join(", ")}` })
         }
-        if(!isValidLanguage(language)){
-            return res.status(400).json({message:"Invalid language"})
+        if (!isValidLanguage(language)) {
+            return res.status(400).json({ message: "Invalid language" })
         }
-        if(code.trim().length===0){
-            return res.status(400).json({message:"Code cannot be empty"})
+        if (code.trim().length === 0) {
+            return res.status(400).json({ message: "Code cannot be empty" })
         }
-        const result=await runCode({code,language,input:input || ""})
+        const result = await runCode({ code, language, input: input || "" })
         return res.status(200).json(result)
 
 
 
-    }catch(err){
+    } catch (err) {
         console.log(err)
-        res.status(500).json({message:"Code execution failed"})
+        res.status(500).json({ message: "Code execution failed", error: err.message, details: err.response?.data })
     }
 }
 
 
 
-export const save=async(req,res)=>{
-    try{
-        const {problemId,language,code,input,output}=req.body
-        if(!language || !code){
-            return res.status(400).json({message:"Language and code are required"})
+export const save = async (req, res) => {
+    try {
+        const { problemId, language, code, input, output } = req.body
+        if (!language || !code) {
+            return res.status(400).json({ message: "Language and code are required" })
         }
-        const existDraft=await prisma.codeDraft.findFirst({
-            where:{
-                userId:req.user.id,
+        const existDraft = await prisma.codeDraft.findFirst({
+            where: {
+                userId: req.user.id,
                 problemId
             }
         })
         let draft;
-        if(existDraft){
-            draft=await prisma.codeDraft.update({
-                where:{
-                    id:existDraft.id
+        if (existDraft) {
+            draft = await prisma.codeDraft.update({
+                where: {
+                    id: existDraft.id
                 },
-                data:{
+                data: {
                     code,
-                    input:input || "",
-                    output:output || "",
+                    input: input || "",
+                    output: output || "",
                     language
                 }
             })
-        }else{
-            draft=await prisma.codeDraft.create({
-                data:{
-                    userId:req.user.id,
-                    problemId:problemId || null,
+        } else {
+            draft = await prisma.codeDraft.create({
+                data: {
+                    userId: req.user.id,
+                    problemId: problemId || null,
                     code,
-                    input:input || "",
-                    output:output || "",
+                    input: input || "",
+                    output: output || "",
                     language
                 }
             })
         }
-        return res.status(200).json({message:"Code saved successfully",draftId:draft.id})
-    }catch(err){
+        return res.status(200).json({ message: "Code saved successfully", draftId: draft.id })
+    } catch (err) {
         console.log(err)
-        res.status(500).json({message:"Code saving failed"})
+        res.status(500).json({ message: "Code saving failed" })
     }
 }
 
 
 
-export const getDraft=async(req,res)=>{
-    try{
-        const {problemId}=req.params
-        const draft=await prisma.codeDraft.findFirst({
-            where:{
-                userId:req.user.id,
+export const getDraft = async (req, res) => {
+    try {
+        const { problemId } = req.params
+        const draft = await prisma.codeDraft.findFirst({
+            where: {
+                userId: req.user.id,
                 problemId
             }
         })
-        if(!draft){
+        if (!draft) {
             return res.status(200).json({
-                code:"",
+                code: "",
                 problemId,
-                language:"python",
-                input:"",
-                output:""
+                language: "python",
+                input: "",
+                output: ""
             })
         }
         return res.status(200).json(draft)
 
-    }catch(err){
+    } catch (err) {
         console.log(err)
-        res.status(500).json({message:"Code fetching failed"})
+        res.status(500).json({ message: "Code fetching failed" })
     }
 }
