@@ -3,13 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { X, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 
-export default function SignUp({ onClose, onSwitchToSignIn }) {
+export default function SignIn({ onClose, onSwitchToSignUp }) {
     const [formData, setFormData] = useState({
-        name: "",
         email: "",
         password: ""
     });
-    const { register, isLoading, error } = useAuthStore();
+    const { login, isLoading, error } = useAuthStore();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -18,7 +17,7 @@ export default function SignUp({ onClose, onSwitchToSignIn }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await register(formData);
+        const success = await login(formData);
         if (success) {
             if (onClose) onClose();
         }
@@ -40,23 +39,10 @@ export default function SignUp({ onClose, onSwitchToSignIn }) {
                         <h1 className='text-2xl font-bold text-gray-900'>STREAK</h1>
                     </div>
                     <h2 className="text-center text-xl font-bold text-gray-900 mb-8">
-                        Create Account
+                        Welcome <span role="img" aria-label="wave">👋</span> Let’s Get started!
                     </h2>
 
                     <form className="space-y-4" onSubmit={handleSubmit}>
-                        <div>
-                            <input
-                                id="name"
-                                name="name"
-                                type="text"
-                                autoComplete="name"
-                                required
-                                value={formData.name}
-                                onChange={handleChange}
-                                className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 bg-gray-50 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Full Name"
-                            />
-                        </div>
                         <div>
                             <input
                                 id="email"
@@ -76,7 +62,7 @@ export default function SignUp({ onClose, onSwitchToSignIn }) {
                                 id="password"
                                 name="password"
                                 type="password"
-                                autoComplete="new-password"
+                                autoComplete="current-password"
                                 required
                                 value={formData.password}
                                 onChange={handleChange}
@@ -96,7 +82,7 @@ export default function SignUp({ onClose, onSwitchToSignIn }) {
                             disabled={isLoading}
                             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Create Account"}
+                            {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Continue"}
                         </button>
                     </form>
 
@@ -129,9 +115,9 @@ export default function SignUp({ onClose, onSwitchToSignIn }) {
 
                         <div className="mt-4 text-center">
                             <p className="text-sm text-gray-600">
-                                Already have an account?{" "}
-                                <button onClick={onSwitchToSignIn} className="font-medium text-indigo-600 hover:text-indigo-500">
-                                    Sign in
+                                Don't have an account?{" "}
+                                <button onClick={onSwitchToSignUp} className="font-medium text-indigo-600 hover:text-indigo-500">
+                                    Sign up
                                 </button>
                             </p>
                         </div>
