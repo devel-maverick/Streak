@@ -71,12 +71,15 @@ export const Logout = (req, res) => {
 
 export const Me = async (req, res) => {
     try {
+        console.log('[Auth] accessing Me endpoint with user:', req.user);
         const user = await prisma.user.findUnique({ where: { id: req.user.id } })
         if (!user) {
+            console.log('[Auth] User not found during Me check');
             return res.status(400).json({ message: "User not found" })
         }
         return res.status(200).json({ message: "User found successfully", user })
     } catch (err) {
+        console.error('[Auth] Error in Me endpoint:', err);
         res.status(500).json({ message: err.message })
     }
 }
@@ -147,4 +150,53 @@ export const googleCallback = async (req, res) => {
         res.status(500).json({ message: "Google OAuth failed" });
     }
 };
+
+
+import { syncUserStats } from "./stats.controller.js";
+
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const {
+            name,
+            codeforcesUsername,
+            leetcodeUsername,
+            codechefUsername,
+            atcoderUsername,
+            csesUsername,
+            githubUrl,
+            linkedinUrl
+        } = req.body;
+
+        // First update the profile details
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                name,
+                codeforcesUsername,
+                leetcodeUsername,
+                codechefUsername,
+                atcoderUsername,
+                csesUsername,
+                githubUrl,
+                linkedinUrl
+            }
+        });
+        try {
+            console.log(`[Profile Update] Triggering stats sync for user ${userId}`);
+            await syncUserStats(userId);
+        } catch (syncError) {
+            console.error('[Profile Update] Stats sync failed:', syncError.message);
+        }
+
+        const finalUser = await prisma.user.findUnique({
+            where: { id: userId }
+        });
+
+        res.json({ message: "Profile updated successfully", user: finalUser });
+    } catch (err) {
+        console.error("Profile Update Error:", err.message);
+        res.status(500).json({ message: "Failed to update profile" });
+    }
+}
 

@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+enum SubscriptionPlan{
+  FREE
+  PRO
+}
+
 enum AuthProvider{
   LOCAL
   GOOGLE
@@ -15,7 +21,6 @@ enum Platform{
   LEETCODE
   CODEFORCES
   CODECHEF
-  ATCODER
   CSES
 }
 enum Difficulty{
@@ -43,22 +48,62 @@ model User {
   authProvider       AuthProvider @default(LOCAL)
   googleId           String?
   leetcodeUsername   String?
+  subscriptionPlan   SubscriptionPlan @default(FREE)
+  razorpayCustomerId       String?
+  razorpaySubscriptionId   String?
+  subscriptionEndDate      DateTime?
+
   codeforcesUsername String?
   codechefUsername   String?
   atcoderUsername    String?
   csesUsername       String?
+  githubUrl          String?
+  linkedinUrl        String?
+
+
   totalSolved         Int              @default(0)
   solvedLeetcode      Int              @default(0)
   solvedCodeforces    Int              @default(0)
   solvedCodechef      Int              @default(0)
-  solvedAtcoder       Int              @default(0)
-  solvedCses          Int              @default(0)
+  
+  leetcodeEasy        Int              @default(0)
+  leetcodeMedium      Int              @default(0)
+  leetcodeHard        Int              @default(0)
+  leetcodeRanking     Int?
+  leetcodeRating      Int              @default(0)
+  
+  codeforcesRating    Int              @default(0)
+  codeforcesMaxRating Int              @default(0)
+  codeforcesRank      String?
+  
+  codechefRating      Int              @default(0)
+  codechefStars       String?
+  
+  currentStreak       Int              @default(0)
+  maxStreak           Int              @default(0)
+  activeDays          Int              @default(0)
+  lastSyncedAt        DateTime?
+  
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
 
   solvedProblems      SolvedProblem[]
   codeDrafts          CodeDraft[]
   aiMessages          AIMessage[]
+  submissionActivity  SubmissionActivity[]
+}
+
+model SubmissionActivity {
+  id          String   @id @default(uuid())
+  userId      String
+  platform    Platform
+  date        DateTime
+  count       Int      @default(1)
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, platform, date])
+  @@index([userId, platform])
 }
 
 model Problem{
@@ -71,8 +116,9 @@ model Problem{
   acceptance         Float?
   difficulty         Difficulty?
   topics             String[]  @default([])
-  companies          String[]  @default([])
+  company            String?
   description        String    @default("")
+  rating             Int?
 
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
@@ -80,11 +126,12 @@ model Problem{
   samples            sampleIO[]
   solvedBy           SolvedProblem[]
   codeDrafts         CodeDraft[]
-  aiMessages          AIMessage[]
+  aiMessages         AIMessage[]
 
-  @@unique([platform, problemId])
+  @@unique([platform, problemId, company])
   @@index([platform])
   @@index([difficulty])
+  @@index([company])
 }
 
 

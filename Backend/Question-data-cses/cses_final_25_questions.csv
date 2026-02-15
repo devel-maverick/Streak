@@ -1,0 +1,44 @@
+id,name,description,constraints,input,output_format,sample_input,sample_output,explanation
+cses_1068,Weird Algorithm,"Simulate the Collatz sequence: if n is even divide by 2, else multiply by 3 and add 1 until n becomes 1.",1 ≤ n ≤ 10^6,Single integer n,Print all values of n during the algorithm.,3,3 10 5 16 8 4 2 1
+cses_1083,Missing Number,"Given numbers 1..n with one missing, find the missing value.",2 ≤ n ≤ 2*10^5,n and list of n-1 numbers,Print missing number,"5
+2 3 1 5",4
+cses_1069,Repetitions,Find longest substring containing only one repeated DNA character.,1 ≤ n ≤ 10^6,DNA string,Length of longest repetition,ATTCGGGA,3
+cses_1094,Increasing Array,Minimum moves to make array non‑decreasing by increment operations.,"1 ≤ n ≤ 2*10^5, 1 ≤ x_i ≤ 10^9",n and array,Minimum moves,"5
+3 2 5 1 7",5
+cses_1070,Permutations,Construct permutation 1..n where no adjacent difference equals 1.,1 ≤ n ≤ 10^6,n,Beautiful permutation or NO SOLUTION,5,4 2 5 3 1
+cses_3217,Knight Moves Grid,"For each square, compute minimum knight moves to reach top‑left.",4 ≤ n ≤ 1000,n,Grid of minimum moves,8,grid output
+cses_3311,Grid Coloring I,Recolor grid so adjacent cells differ and each cell changes.,"1 ≤ n,m ≤ 500",n m and grid,Valid recolored grid or IMPOSSIBLE,"3 4
+AAAA
+BBBB
+CCDD","CDCD
+DCDC
+ABAB"
+cses_2431,Digit Queries,Find kth digit in infinite concatenation of positive integers.,"1 ≤ q ≤ 1000, 1 ≤ k ≤ 10^18",q and queries,Digit for each query,"3
+7
+19
+12","7
+4
+1",
+cses_1743,String Reorder,Reorder string so no adjacent chars equal; lexicographically minimal.,1 ≤ n ≤ 10^6,String A–Z,Reordered string or -1,HATTIVATTI,AHATITITVT,
+cses_1621,Distinct Numbers,Count number of distinct values in array.,1 ≤ n ≤ 2*10^5,n and array,Count of distinct values,"5
+2 3 2 2 3",2,
+cses_1084,Apartments,Match applicants to apartments within size tolerance.,"1 ≤ n,m ≤ 2*10^5","n m k, desired sizes, apartment sizes",Maximum matches,"4 3 5
+60 45 80 60
+30 60 75",2,
+cses_3215,Bouncing Ball Steps,Simulate diagonal bouncing ball on grid for k steps.,"2 ≤ n,m ≤ 10^9, 0 ≤ k ≤ 10^18",t testcases with n m k,Final position and direction changes,3 4 0,1 1 0,
+cses_1087,Shortest Subsequence,Find shortest DNA sequence not a subsequence of given string.,1 ≤ n ≤ 10^6,DNA string,Shortest non‑subsequence,ACGTACGT,AAA,
+cses_1633,Dice Combinations,Count ways to form sum n using dice throws.,1 ≤ n ≤ 10^6,n,Ways modulo 10^9+7,3,4,
+cses_1192,Counting Rooms,Count connected components of floor cells in grid.,"1 ≤ n,m ≤ 1000",n m and grid,Number of rooms,"5 8
+########",3,
+cses_1646,Static Range Sum Queries,Answer sum queries on static array.,"1 ≤ n,q ≤ 2*10^5","n q, array, queries",Sum for each query,8 4,11,
+cses_1674,Subordinates,Compute number of subordinates for each employee in tree.,1 ≤ n ≤ 2*10^5,n and boss list,Subordinate counts,"5
+1 1 2 3",4 1 1 0 0,
+cses_2164,Josephus Queries,Find kth removed child in Josephus elimination.,1 ≤ q ≤ 10^5,queries n k,Answer per query,7 1,2,
+cses_1731,Word Combinations,Count ways to form string using dictionary words.,1 ≤ n ≤ 5000,"string, k words",Ways modulo 10^9+7,ababc,2,Possible ways: ab+ab+c and abab+c.
+cses_2189,Point Location Test,"Determine if point lies LEFT, RIGHT or TOUCH relative to line.",-10^9 ≤ coords ≤ 10^9,t testcases with coordinates,LEFT/RIGHT/TOUCH,1 1 5 3 2 3,LEFT,
+cses_1628,Meet in the Middle,Count subsets whose sum equals x.,1 ≤ n ≤ 40,n x and array,Number of ways,4 5,3,
+cses_3220,Sliding Window Sum,Compute xor of all sliding window sums using generator input.,1 ≤ k ≤ n ≤ 10^7,n k and generator params,Xor of window sums,8 5,12,"Window sums are 14,15,22,27 so xor is 12."
+cses_3112,Hidden Integer,Interactive problem to find hidden integer using comparisons.,1 ≤ x ≤ 10^9,Interactive,! x,? 3,! 7,
+cses_1146,Counting Bits,Count total number of set bits in numbers 1..n.,1 ≤ n ≤ 10^15,n,Total set bits,7,12,Binary representations from 1..7 contain 12 ones.
+cses_1655,Maximum Xor Subarray,Find maximum xor value among all subarrays.,1 ≤ n ≤ 2*10^5,n and array,Maximum xor sum,"4
+5 1 5 9",13,
