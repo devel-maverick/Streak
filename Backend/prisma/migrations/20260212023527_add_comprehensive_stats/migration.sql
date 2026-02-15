@@ -1,0 +1,12 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "activeDays" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "codeforcesMaxRating" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "codeforcesRank" TEXT,
+ADD COLUMN     "codeforcesRating" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "currentStreak" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "lastSyncedAt" TIMESTAMP(3),
+ADD COLUMN     "leetcodeEasy" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "leetcodeHard" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "leetcodeMedium" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "leetcodeRanking" INTEGER,
+ADD COLUMN     "maxStreak" INTEGER NOT NULL DEFAULT 0;

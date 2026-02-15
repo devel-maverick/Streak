@@ -42,9 +42,10 @@ const importCompanyCSV = async (filePath) => {
         const title = row[index("title")]
         const existing = await prisma.problem.findUnique({
             where: {
-                platform_problemId: {
+                platform_problemId_company: {
                     platform: PLATFORM,
-                    problemId
+                    problemId,
+                    company: ''
                 }
             }
         })
@@ -58,7 +59,7 @@ const importCompanyCSV = async (filePath) => {
                     problemId,
                     title,
                     url: `https://cses.fi/problemset/task/${problemId}`,
-                    companies: []
+                    company: ''
                 }
             })
             inserted++
