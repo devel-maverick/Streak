@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import usePracticeStore from '../store/usePracticeStore';
 import QuestionCard from '../components/companies/QuestionCard';
-import { Search, ChevronLeft, ChevronRight, Award, Code2, Terminal } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Practice() {
@@ -50,9 +50,6 @@ export default function Practice() {
                                     {userSolvedCounts.total} <span className="text-gray-400 text-lg">/ {stats.total}</span>
                                 </h3>
                             </div>
-                            <div className="p-3 bg-indigo-50 rounded-lg">
-                                <Award className="w-6 h-6 text-indigo-600" />
-                            </div>
                         </div>
                         <div className="mt-4 w-full bg-gray-100 rounded-full h-2">
                             <div
@@ -75,9 +72,6 @@ export default function Practice() {
                                     {userSolvedCounts.codeforces} <span className="text-gray-400 text-lg">/ {stats.codeforces}</span>
                                 </h3>
                             </div>
-                            <div className="p-3 bg-red-50 rounded-lg">
-                                <Code2 className="w-6 h-6 text-red-600" />
-                            </div>
                         </div>
                         <div className="mt-4 w-full bg-gray-100 rounded-full h-2">
                             <div
@@ -99,9 +93,6 @@ export default function Practice() {
                                 <h3 className="text-2xl font-bold text-gray-900">
                                     {userSolvedCounts.cses} <span className="text-gray-400 text-lg">/ {stats.cses}</span>
                                 </h3>
-                            </div>
-                            <div className="p-3 bg-blue-50 rounded-lg">
-                                <Terminal className="w-6 h-6 text-blue-600" />
                             </div>
                         </div>
                         <div className="mt-4 w-full bg-gray-100 rounded-full h-2">
