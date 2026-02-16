@@ -39,17 +39,28 @@ export default function Payment() {
                 description: "Upgrade to Pro for AI Features",
                 handler: async function (response) {
                     try {
-                        await axiosInstance.post('/payment/webhook', {
-                            event: 'subscription.activated',
+                        const verifyRes = await axiosInstance.post('/payment/verify', {
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_subscription_id: response.razorpay_subscription_id,
+                            razorpay_signature: response.razorpay_signature
                         });
 
-                        setTimeout(() => {
-                            checkAuth();
+                        if (verifyRes.data.success) {
+                            toast.success("Payment successful! Upgrading your account...");
+
+                            setTimeout(() => {
+                                checkAuth();
+                                setLoading(false);
+                                navigate('/profile');
+                            }, 2000);
+                        } else {
+                            toast.error("Payment verification failed");
                             setLoading(false);
-                        }, 2000);
+                        }
 
                     } catch (error) {
                         console.error("Verification failed", error);
+                        toast.error("Payment verification failed");
                         setLoading(false);
                     }
                 },

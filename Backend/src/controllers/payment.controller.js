@@ -59,6 +59,55 @@ export const createSubscription = async (req, res) => {
 }
 
 
+export const verifySubscription = async (req, res) => {
+    try {
+        const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = req.body;
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.user.id
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        const generated_signature = crypto
+            .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+            .update(razorpay_payment_id + "|" + razorpay_subscription_id)
+            .digest("hex");
+
+        if (generated_signature !== razorpay_signature) {
+            return res.status(400).json({
+                message: "Invalid signature"
+            });
+        }
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                subscriptionPlan: "PRO",
+                razorpaySubscriptionId: razorpay_subscription_id
+            }
+        });
+
+        return res.status(200).json({
+            message: "Payment verified successfully",
+            success: true
+        });
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message: "Verification failed"
+        });
+    }
+}
+
+
 export const webhookHandler = async (req, res) => {
     try {
         const signature = req.headers["x-razorpay-signature"];
@@ -82,9 +131,14 @@ export const webhookHandler = async (req, res) => {
         const payload = req.body.payload?.subscription?.entity ||
             req.body.payload?.payment?.entity;
 
+        if (!payload) {
+            console.log("Webhook received but no payload entity found:", event);
+            return res.status(200).json({ received: true });
+        }
+
         if (event === "subscription.activated") {
             const userId = payload.notes?.userId;
-            const endDate = Date.now(payload.current_period_end * 1000)
+            const endDate = new Date(payload.current_period_end * 1000)
             await prisma.user.update({
                 where: {
                     id: userId
@@ -175,7 +229,7 @@ export const cancelSubscription = async (req, res) => {
             return res.status(400).json({ message: "No active subscription" });
         }
 
-        await razorpay.subscriptions.cancel(user.razorpaySubscriptionId, {
+        await razorpayInstance.subscriptions.cancel(user.razorpaySubscriptionId, {
             cancel_at_cycle_end: 1,
         });
 

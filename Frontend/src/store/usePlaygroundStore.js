@@ -43,7 +43,7 @@ export const usePlaygroundStore = create((set, get) => ({
         }
     },
 
-    analyzeCode: async (code, language) => {
+    analyzeCode: async (code, language, type) => {
         const user = useAuthStore.getState().user;
         if (!user || user.subscriptionPlan !== 'PRO') {
             set(state => ({
@@ -59,17 +59,35 @@ export const usePlaygroundStore = create((set, get) => ({
             return null;
         }
 
-        set({ isAiGenerating: true, error: null });
+        if (!code || !code.trim()) {
+            toast.error("Please enter some code to analyze");
+            return null;
+        }
+
+        const promptType = type === 'time' ? "Analyze time complexity" : "Analyze space complexity";
+
+        set(state => ({
+            isAiGenerating: true,
+            error: null,
+            chatHistory: [...state.chatHistory, { role: 'user', content: promptType }]
+        }));
+
         try {
-            const response = await axiosInstance.post("/ai/analyze", { code, language, type: "time" });
+            const response = await axiosInstance.post("/ai/analyze", { code, language, type });
             const aiResponse = response.data.analysis || response.data.message;
             set(state => ({
-                chatHistory: [...state.chatHistory, { role: 'user', content: "Analyze my code" }, { role: 'ai', content: aiResponse }],
+                chatHistory: [...state.chatHistory, { role: 'ai', content: aiResponse }],
                 isAiGenerating: false
             }));
             return aiResponse;
         } catch (error) {
-            set({ error: "Analysis failed", isAiGenerating: false });
+            const errorMsg = error.response?.data?.message || "Analysis failed";
+            set(state => ({
+                error: errorMsg,
+                isAiGenerating: false,
+                chatHistory: [...state.chatHistory, { role: 'ai', content: `Error: ${errorMsg}` }]
+            }));
+            toast.error(errorMsg);
             return null;
         }
     },
@@ -90,8 +108,18 @@ export const usePlaygroundStore = create((set, get) => ({
             return null;
         }
 
+        if (!code || !code.trim()) {
+            toast.error("Please enter some code to optimize");
+            return null;
+        }
+
         const { input, output } = get();
-        set({ isAiGenerating: true, error: null });
+        set(state => ({
+            isAiGenerating: true,
+            error: null,
+            chatHistory: [...state.chatHistory, { role: 'user', content: "Optimize my code" }]
+        }));
+
         try {
             const response = await axiosInstance.post("/ai/improvement-suggestions", {
                 code,
@@ -102,17 +130,23 @@ export const usePlaygroundStore = create((set, get) => ({
             const data = response.data;
             let aiResponse = data.message || "No suggestions found.";
 
-            if (data.suggestions && Array.isArray(data.suggestions)) {
+            if (data.suggestions && Array.isArray(data.suggestions) && data.suggestions.length > 0) {
                 aiResponse = data.suggestions.map(s => `**${s.category}**: ${s.suggestion}`).join("\n\n");
             }
 
             set(state => ({
-                chatHistory: [...state.chatHistory, { role: 'user', content: "Optimize my code" }, { role: 'ai', content: aiResponse }],
+                chatHistory: [...state.chatHistory, { role: 'ai', content: aiResponse }],
                 isAiGenerating: false
             }));
             return aiResponse;
         } catch (error) {
-            set({ error: "Optimization failed", isAiGenerating: false });
+            const errorMsg = error.response?.data?.message || "Optimization failed";
+            set(state => ({
+                error: errorMsg,
+                isAiGenerating: false,
+                chatHistory: [...state.chatHistory, { role: 'ai', content: `Error: ${errorMsg}` }]
+            }));
+            toast.error(errorMsg);
             return null;
         }
     },
@@ -133,7 +167,17 @@ export const usePlaygroundStore = create((set, get) => ({
             return null;
         }
 
-        set({ isAiGenerating: true, error: null });
+        if (!code || !code.trim()) {
+            toast.error("Please enter some code to explain");
+            return null;
+        }
+
+        set(state => ({
+            isAiGenerating: true,
+            error: null,
+            chatHistory: [...state.chatHistory, { role: 'user', content: "Explain this code" }]
+        }));
+
         try {
             const response = await axiosInstance.post("/ai/chat", {
                 message: "Explain this code:\n" + code,
@@ -146,12 +190,18 @@ export const usePlaygroundStore = create((set, get) => ({
             }
 
             set(state => ({
-                chatHistory: [...state.chatHistory, { role: 'user', content: "Explain this code" }, { role: 'ai', content: aiResponse }],
+                chatHistory: [...state.chatHistory, { role: 'ai', content: aiResponse }],
                 isAiGenerating: false
             }));
             return aiResponse;
         } catch (error) {
-            set({ error: "Explanation failed", isAiGenerating: false });
+            const errorMsg = error.response?.data?.message || "Explanation failed";
+            set(state => ({
+                error: errorMsg,
+                isAiGenerating: false,
+                chatHistory: [...state.chatHistory, { role: 'ai', content: `Error: ${errorMsg}` }]
+            }));
+            toast.error(errorMsg);
             return null;
         }
     },
@@ -176,7 +226,7 @@ export const usePlaygroundStore = create((set, get) => ({
         set(state => ({ chatHistory: [...state.chatHistory, { role: 'user', content: message }] }));
         try {
             const response = await axiosInstance.post("/ai/chat", { message, context });
-            const aiResponse = response.data.response;
+            const aiResponse = response.data.response || response.data.message;
             set(state => ({
                 chatHistory: [...state.chatHistory, { role: 'ai', content: aiResponse }],
                 isAiGenerating: false

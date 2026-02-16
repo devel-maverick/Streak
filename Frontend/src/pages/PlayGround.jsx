@@ -14,7 +14,9 @@ import {
     Check,
     X,
     Send,
-    Lock
+    Lock,
+    Clock,
+    Database
 } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 
@@ -108,8 +110,8 @@ export default function Playground() {
 
     const handleAiAction = async (actionType) => {
         console.log("AI button Clicked:", actionType);
-        setShowChat(true); 
-        if (actionType === 'analyze') await analyzeCode(code, language);
+        setShowChat(true);
+        if (actionType === 'time' || actionType === 'space') await analyzeCode(code, language, actionType);
         if (actionType === 'optimize') await optimizeCode(code, language);
         if (actionType === 'explain') await explainCode(code, language);
     };
@@ -118,7 +120,7 @@ export default function Playground() {
         e.preventDefault();
         if (!chatInput.trim() || isAiGenerating) return;
 
-        await chatWithAI(chatInput, { language, code }); 
+        await chatWithAI(chatInput, { language, code });
         setChatInput("");
     };
 
@@ -308,7 +310,7 @@ export default function Playground() {
                             {chatHistory.map((msg, idx) => (
                                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[85%] rounded-lg p-3 text-sm ${msg.role === 'user'
-                                        ? 'bg-indigo-600 text-white rounded-br-none'
+                                        ? 'bg-gray-500 text-white rounded-br-none'
                                         : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
                                         }`}>
                                         {msg.role === 'user' ? (
@@ -408,13 +410,23 @@ export default function Playground() {
 
                 <div className="flex items-center gap-3 overflow-x-auto">
                     <button
-                        onClick={() => handleAiAction('analyze')}
+                        onClick={() => handleAiAction('time')}
                         disabled={!isPro || isAiGenerating}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 text-sm font-medium transition-all
                             ${!isPro ? "opacity-75 cursor-not-allowed" : "hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 group"}`}
                     >
-                        <Sparkles size={16} />
-                        <span>Analyze</span>
+                        <Clock size={16} />
+                        <span>Time</span>
+                        {!isPro && <Lock size={12} className="ml-1 opacity-60" />}
+                    </button>
+                    <button
+                        onClick={() => handleAiAction('space')}
+                        disabled={!isPro || isAiGenerating}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 text-sm font-medium transition-all
+                            ${!isPro ? "opacity-75 cursor-not-allowed" : "hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 group"}`}
+                    >
+                        <Database size={16} />
+                        <span>Space</span>
                         {!isPro && <Lock size={12} className="ml-1 opacity-60" />}
                     </button>
                     <button

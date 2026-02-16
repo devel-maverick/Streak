@@ -21,7 +21,7 @@ export default function Navbar() {
                 <div className="flex item-center justify-between px-25 py-3">
                     <div className="flex items-center space-x-1">
                         <img src="/logo1.png" alt="logo" className="w-10 h-10" />
-                        <Link to="/"><Cover>STREAK</Cover></Link>
+                        <Link to="/"><Cover><h1 className="font-bold">STREAK</h1></Cover></Link>
                     </div>
                     <ul className="flex items-center space-x-10">
                         <li><Link to="/practice" className="relative text-gray-500 hover:text-black after:content-[''] after:absolute after:left-0 after:bottom-[-2px] after:w-full after:h-[1px] after:bg-black after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Practice</Link></li>

@@ -399,7 +399,7 @@ export default function Profile() {
 
                             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                                 <h3 className="font-bold mb-4 text-gray-900">Visual Distribution</h3>
-                                <div className="h-48 relative flex items-center justify-center">
+                                <div className="h-48 w-full relative flex items-center justify-center">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                             <Pie
@@ -448,7 +448,7 @@ export default function Profile() {
 
                         <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                             <h3 className="font-bold mb-4 text-gray-900">Rating History</h3>
-                            <div className="h-64">
+                            <div className="h-64 w-full">
                                 {cfRatingHistory.length > 0 ? (
                                     <ResponsiveContainer width="100%" height="100%">
                                         <LineChart data={cfRatingHistory}>
