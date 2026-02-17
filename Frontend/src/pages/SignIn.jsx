@@ -101,7 +101,7 @@ export default function SignIn({ onClose, onSwitchToSignUp }) {
                         <div className="mt-6">
                             <button
                                 type="button"
-                                onClick={() => window.location.href = "http://localhost:3000/api/auth/google"}
+                                onClick={() => window.location.href = import.meta.env.MODE === "development" ? "http://localhost:3000/api/auth/google" : "/api/auth/google"}
                                 className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-900 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
                             >
                                 <span className="mr-2">
