@@ -141,10 +141,16 @@ export const googleCallback = async (req, res) => {
         }
 
         const token = GenerateToken(user, res);
-        console.log(token)
-        res.redirect(
-            `${process.env.FRONTEND_URL}/oauth-success?token=${token}`
-        );
+        console.log(token);
+
+        // In production, backend serves frontend, so relative path works and keeps us on the same domain.
+        // In dev, frontend is on a different port (5173), so we need the full URL.
+        const isProduction = process.env.NODE_ENV === "production";
+        const redirectUrl = isProduction
+            ? `/oauth-success?token=${token}`
+            : `${process.env.FRONTEND_URL}/oauth-success?token=${token}`;
+
+        res.redirect(redirectUrl);
     } catch (err) {
         console.error("Google OAuth Error:", err.message);
         res.status(500).json({ message: "Google OAuth failed" });
