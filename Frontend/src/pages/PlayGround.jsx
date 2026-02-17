@@ -19,6 +19,7 @@ import {
     Database
 } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
+import ReactMarkdown from 'react-markdown';
 
 const LANGUAGES = [
     { value: "cpp", label: "C++", mono: "cpp" },
@@ -348,7 +349,13 @@ export default function Playground() {
                                                     }
                                                 } catch (e) {
                                                 }
-                                                return <pre className="whitespace-pre-wrap font-sans">{msg.content}</pre>;
+                                                return (
+                                                    <div className="markdown-body text-sm prose prose-sm max-w-none">
+                                                        <ReactMarkdown>
+                                                            {msg.content}
+                                                        </ReactMarkdown>
+                                                    </div>
+                                                );
                                             })()
                                         )}
                                     </div>

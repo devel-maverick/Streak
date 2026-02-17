@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import prisma from "../config/db.js";
 console.log("ENV KEY:", process.env.GOOGLE_API_KEY);
 const genAi = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-const model = genAi.getGenerativeModel({ model: "gemini-2.0-flash" });
+const model = genAi.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 
 
@@ -122,6 +122,9 @@ export const AnalyzeRoute = async (req, res) => {
 
     } catch (err) {
         console.log(err);
+        if (err.status === 429 || (err.message && err.message.includes("429"))) {
+            return res.status(429).json({ message: "AI rate limit exceeded. Please try again later." });
+        }
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
