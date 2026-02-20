@@ -32,6 +32,14 @@ const LANGUAGES = [
     { value: "rust", label: "Rust", mono: "rust" },
 ];
 
+const AI_MODELS = [
+    { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
+    { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
+    { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
+    { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
+    { value: "gemini-1.5-flash-8b", label: "Gemini 1.5 Flash-8B" },
+];
+
 const BOILERPLATE = {
     cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    // Your code here\n\n    return 0;\n}`,
     c: `#include <stdio.h>\n\nint main() {\n    // Your code here\n\n    return 0;\n}`,
@@ -60,11 +68,14 @@ export default function Playground() {
         explainCode,
         chatWithAI,
         chatHistory,
+        selectedModel,
+        setSelectedModel,
     } = usePlaygroundStore();
     const { user } = useAuthStore();
     const isPro = user?.subscriptionPlan === 'PRO';
 
     const [showLangDropdown, setShowLangDropdown] = useState(false);
+    const [showModelDropdown, setShowModelDropdown] = useState(false);
     const [copied, setCopied] = useState(false);
     const [showChat, setShowChat] = useState(false);
     const [chatInput, setChatInput] = useState("");
@@ -74,6 +85,7 @@ export default function Playground() {
     }, [chatHistory, showChat]);
 
     const currentLang = LANGUAGES.find((l) => l.value === language) || LANGUAGES[0];
+    const currentModel = AI_MODELS.find((m) => m.value === selectedModel) || AI_MODELS[0];
 
     const handleLanguageChange = useCallback((lang) => {
         setLanguage(lang);
@@ -170,6 +182,43 @@ export default function Playground() {
                                             onClick={() => handleLanguageChange(lang.value)}
                                         >
                                             {lang.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+
+                    {/* AI Model Dropdown */}
+                    <div className="relative">
+                        <button
+                            className="flex items-center gap-2 px-3 py-1.5 rounded bg-white border border-indigo-200 text-indigo-700 text-sm font-medium cursor-pointer hover:bg-indigo-50 transition-colors min-w-[140px] justify-between shadow-sm"
+                            onClick={() => setShowModelDropdown(!showModelDropdown)}
+                        >
+                            <div className="flex items-center gap-2">
+                                <Sparkles size={14} className="text-indigo-500" />
+                                <span>{currentModel.label}</span>
+                            </div>
+                            <ChevronDown
+                                size={14}
+                                className={`transition-transform duration-200 text-indigo-500 ${showModelDropdown ? "rotate-180" : ""}`}
+                            />
+                        </button>
+                        {showModelDropdown && (
+                            <>
+                                <div className="fixed inset-0 z-40" onClick={() => setShowModelDropdown(false)} />
+                                <div className="absolute top-[calc(100%+4px)] left-0 bg-white border border-gray-200 rounded-lg p-1 min-w-[150px] z-50 shadow-lg">
+                                    {AI_MODELS.map((modelOption) => (
+                                        <button
+                                            key={modelOption.value}
+                                            className={`block w-full px-3 py-2 text-sm text-left rounded cursor-pointer transition-colors ${selectedModel === modelOption.value ? "bg-indigo-50 text-indigo-700 font-semibold" : "text-gray-600 hover:bg-gray-50"
+                                                }`}
+                                            onClick={() => {
+                                                setSelectedModel(modelOption.value);
+                                                setShowModelDropdown(false);
+                                            }}
+                                        >
+                                            {modelOption.label}
                                         </button>
                                     ))}
                                 </div>

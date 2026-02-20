@@ -12,6 +12,9 @@ export const usePlaygroundStore = create((set, get) => ({
     isAiGenerating: false,
     error: null,
     chatHistory: [],
+    selectedModel: "gemini-2.5-flash",
+
+    setSelectedModel: (model) => set({ selectedModel: model }),
 
     setLanguage: (language) => set({ language }),
     setCode: (code) => set({ code }),
@@ -73,7 +76,8 @@ export const usePlaygroundStore = create((set, get) => ({
         }));
 
         try {
-            const response = await axiosInstance.post("/ai/analyze", { code, language, type });
+            const { selectedModel } = get();
+            const response = await axiosInstance.post("/ai/analyze", { code, language, type, model: selectedModel });
             const aiResponse = response.data.analysis || response.data.message;
             set(state => ({
                 chatHistory: [...state.chatHistory, { role: 'ai', content: aiResponse }],
@@ -121,11 +125,13 @@ export const usePlaygroundStore = create((set, get) => ({
         }));
 
         try {
+            const { selectedModel } = get();
             const response = await axiosInstance.post("/ai/improvement-suggestions", {
                 code,
                 language,
                 output: typeof output === 'string' ? output : JSON.stringify(output),
-                expectedOutput: ""
+                expectedOutput: "",
+                model: selectedModel
             });
             const data = response.data;
             let aiResponse = data.message || "No suggestions found.";
@@ -179,9 +185,11 @@ export const usePlaygroundStore = create((set, get) => ({
         }));
 
         try {
+            const { selectedModel } = get();
             const response = await axiosInstance.post("/ai/chat", {
                 message: "Explain this code:\n" + code,
-                context: { language }
+                context: { language },
+                model: selectedModel
             });
             let aiResponse = response.data.response || response.data.message;
 
@@ -225,7 +233,8 @@ export const usePlaygroundStore = create((set, get) => ({
         set({ isAiGenerating: true });
         set(state => ({ chatHistory: [...state.chatHistory, { role: 'user', content: message }] }));
         try {
-            const response = await axiosInstance.post("/ai/chat", { message, context });
+            const { selectedModel } = get();
+            const response = await axiosInstance.post("/ai/chat", { message, context, model: selectedModel });
             const aiResponse = response.data.response || response.data.message;
             set(state => ({
                 chatHistory: [...state.chatHistory, { role: 'ai', content: aiResponse }],

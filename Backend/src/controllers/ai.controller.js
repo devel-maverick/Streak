@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import prisma from "../config/db.js";
 console.log("ENV KEY:", process.env.GOOGLE_API_KEY);
 const genAi = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-const model = genAi.getGenerativeModel({ model: "gemini-2.5-flash" });
+const getModel = (modelName) => genAi.getGenerativeModel({ model: modelName || "gemini-2.5-flash" });
 
 
 
@@ -10,7 +10,7 @@ const model = genAi.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 export const AIChat = async (req, res) => {
     try {
-        const { message, problemId, language, code, input, output } = req.body;
+        const { message, problemId, language, code, input, output, model } = req.body;
         if (!message) {
             return res.status(400).json({ message: "Message is required" });
         }
@@ -52,7 +52,8 @@ export const AIChat = async (req, res) => {
         ${message}
     Reply Naturally and Concisely.
     `
-        const result = await model.generateContent(prompt);
+        const activeModel = getModel(model);
+        const result = await activeModel.generateContent(prompt);
         const response = result.response.text().trim();
         await prisma.aIMessage.createMany({
             data: [
@@ -77,7 +78,7 @@ export const AIChat = async (req, res) => {
 
 export const AnalyzeRoute = async (req, res) => {
     try {
-        const { type, code, language } = req.body;
+        const { type, code, language, model } = req.body;
         if (!code) {
             return res.status(400).json({ message: "Code is required" });
         }
@@ -116,7 +117,8 @@ export const AnalyzeRoute = async (req, res) => {
             "suggestions":[]
             }`;
         }
-        const result = await model.generateContent(prompt);
+        const activeModel = getModel(model);
+        const result = await activeModel.generateContent(prompt);
         const response = result.response.text().replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "").trim();
         return res.status(200).json({ message: response });
 
@@ -132,7 +134,7 @@ export const AnalyzeRoute = async (req, res) => {
 
 export const explainWrongOutputRoute = async (req, res) => {
     try {
-        const { code, input, actualOutput, expectedOutput, language } = req.body;
+        const { code, input, actualOutput, expectedOutput, language, model } = req.body;
 
         const prompt = `
 User code produced WRONG output.
@@ -156,7 +158,8 @@ Return ONLY JSON:
  "suggestions":[]
 }`;
 
-        const result = await model.generateContent(prompt);
+        const activeModel = getModel(model);
+        const result = await activeModel.generateContent(prompt);
 
         const text = result.response.text()
             .replace(/^```(?:json)?\s*\n?/i, "")
@@ -174,7 +177,7 @@ Return ONLY JSON:
 
 export const improvementSuggestionsRoute = async (req, res) => {
     try {
-        const { code, output, expectedOutput, language } = req.body;
+        const { code, output, expectedOutput, language, model } = req.body;
 
         const prompt = `
 Give improvement suggestions.
@@ -196,7 +199,8 @@ Return ONLY JSON:
  "suggestions":[{ "category":"", "suggestion":"" }]
 }`;
 
-        const result = await model.generateContent(prompt);
+        const activeModel = getModel(model);
+        const result = await activeModel.generateContent(prompt);
 
         const text = result.response.text()
             .replace(/^```(?:json)?\s*\n?/i, "")
