@@ -188,43 +188,6 @@ export default function Playground() {
                             </>
                         )}
                     </div>
-
-                    {/* AI Model Dropdown */}
-                    <div className="relative">
-                        <button
-                            className="flex items-center gap-2 px-3 py-1.5 rounded bg-white border border-indigo-200 text-indigo-700 text-sm font-medium cursor-pointer hover:bg-indigo-50 transition-colors min-w-[140px] justify-between shadow-sm"
-                            onClick={() => setShowModelDropdown(!showModelDropdown)}
-                        >
-                            <div className="flex items-center gap-2">
-                                <Sparkles size={14} className="text-indigo-500" />
-                                <span>{currentModel.label}</span>
-                            </div>
-                            <ChevronDown
-                                size={14}
-                                className={`transition-transform duration-200 text-indigo-500 ${showModelDropdown ? "rotate-180" : ""}`}
-                            />
-                        </button>
-                        {showModelDropdown && (
-                            <>
-                                <div className="fixed inset-0 z-40" onClick={() => setShowModelDropdown(false)} />
-                                <div className="absolute top-[calc(100%+4px)] left-0 bg-white border border-gray-200 rounded-lg p-1 min-w-[150px] z-50 shadow-lg">
-                                    {AI_MODELS.map((modelOption) => (
-                                        <button
-                                            key={modelOption.value}
-                                            className={`block w-full px-3 py-2 text-sm text-left rounded cursor-pointer transition-colors ${selectedModel === modelOption.value ? "bg-indigo-50 text-indigo-700 font-semibold" : "text-gray-600 hover:bg-gray-50"
-                                                }`}
-                                            onClick={() => {
-                                                setSelectedModel(modelOption.value);
-                                                setShowModelDropdown(false);
-                                            }}
-                                        >
-                                            {modelOption.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </>
-                        )}
-                    </div>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -464,7 +427,44 @@ export default function Playground() {
                     <span>{isRunning ? "Running..." : "Run Code"}</span>
                 </button>
 
-                <div className="flex items-center gap-3 overflow-x-auto">
+                <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
+                    {/* AI Model Dropdown */}
+                    <div className="relative">
+                        <button
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-black border border-gray-800 text-white text-sm font-medium cursor-pointer hover:bg-gray-900 transition-colors min-w-[160px] justify-between shadow-sm"
+                            onClick={() => setShowModelDropdown(!showModelDropdown)}
+                        >
+                            <div className="flex items-center gap-2">
+                                <Sparkles size={14} className="text-gray-300" />
+                                <span>{currentModel.label}</span>
+                            </div>
+                            <ChevronDown
+                                size={14}
+                                className={`transition-transform duration-200 text-gray-400 ${showModelDropdown ? "rotate-180" : ""}`}
+                            />
+                        </button>
+                        {showModelDropdown && (
+                            <>
+                                <div className="fixed inset-0 z-[100]" onClick={() => setShowModelDropdown(false)} />
+                                <div className="absolute bottom-[calc(100%+8px)] left-0 bg-black border border-gray-800 rounded-lg p-1 min-w-[160px] z-[110] shadow-xl origin-bottom-left">
+                                    {AI_MODELS.map((modelOption) => (
+                                        <button
+                                            key={modelOption.value}
+                                            className={`block w-full px-3 py-2 text-sm text-left rounded-md cursor-pointer transition-colors ${selectedModel === modelOption.value ? "bg-gray-800 text-white font-semibold" : "text-gray-400 hover:bg-gray-900 hover:text-gray-200"
+                                                }`}
+                                            onClick={() => {
+                                                setSelectedModel(modelOption.value);
+                                                setShowModelDropdown(false);
+                                            }}
+                                        >
+                                            {modelOption.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+
                     <button
                         onClick={() => handleAiAction('time')}
                         disabled={!isPro || isAiGenerating}
