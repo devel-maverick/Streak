@@ -53,12 +53,22 @@ export default function QuestionCard({ problem, showMetadata = true, context = '
     };
 
     const getLeetCodeUrl = () => {
+        if (problem.url) {
+            if (problem.url.startsWith('http://') || problem.url.startsWith('https://')) {
+                return problem.url;
+            }
+            if (problem.url.startsWith('/')) {
+                return `https://leetcode.com${problem.url}`;
+            }
+            return `https://leetcode.com/${problem.url}`;
+        }
+
         const slug = problem.title
             .toLowerCase()
             .replace(/[^a-z0-9\s-]/g, '')
             .trim()
             .replace(/\s+/g, '-');
-        return problem.url || `https://leetcode.com/problems/${slug}/`;
+        return `https://leetcode.com/problems/${slug}/`;
     };
 
     return (
