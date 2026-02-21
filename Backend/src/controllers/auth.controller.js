@@ -47,6 +47,9 @@ export const Login = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "User not found" })
         }
+        if (!user.password) {
+            return res.status(400).json({ message: "Please login with the provider you used to sign up (e.g., Google)" })
+        }
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid password" })
@@ -142,7 +145,7 @@ export const googleCallback = async (req, res) => {
 
         const token = GenerateToken(user, res);
         console.log(token);
-        
+
         const isProduction = process.env.NODE_ENV === "production";
         const redirectUrl = isProduction
             ? `/oauth-success?token=${token}`

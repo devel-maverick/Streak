@@ -34,10 +34,10 @@ const LANGUAGES = [
 
 const AI_MODELS = [
     { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
-    { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
-    { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
-    { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
-    { value: "gemini-1.5-flash-8b", label: "Gemini 1.5 Flash-8B" },
+    { value: "llama-3.3-70b-versatile", label: "Llama 3.3 70B (Groq)" },
+    { value: "llama-3.1-8b-instant", label: "Llama 3.1 8B (Groq)" },
+    { value: "mixtral-8x7b-32768", label: "Mixtral 8x7B (Groq)" },
+    { value: "gemma2-9b-it", label: "Gemma 2 9B (Groq)" },
 ];
 
 const BOILERPLATE = {

@@ -1,8 +1,24 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import prisma from "../config/db.js";
-console.log("ENV KEY:", process.env.GOOGLE_API_KEY);
+import Groq from "groq-sdk";
+
 const genAi = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const groq = new Groq({ apiKey: process.env.Groq_API_KEY || "missing_api_key" });
+
 const getModel = (modelName) => genAi.getGenerativeModel({ model: modelName || "gemini-2.5-flash" });
+
+const generateContentWrapper = async (modelName, prompt) => {
+    if (modelName && (modelName.includes("llama") || modelName.includes("mixtral") || modelName.includes("gemma"))) {
+        const chatCompletion = await groq.chat.completions.create({
+            messages: [{ role: "user", content: prompt }],
+            model: modelName,
+        });
+        return { response: { text: () => chatCompletion.choices[0]?.message?.content || "" } };
+    } else {
+        const activeModel = getModel(modelName);
+        return await activeModel.generateContent(prompt);
+    }
+};
 
 
 
@@ -52,8 +68,7 @@ export const AIChat = async (req, res) => {
         ${message}
     Reply Naturally and Concisely.
     `
-        const activeModel = getModel(model);
-        const result = await activeModel.generateContent(prompt);
+        const result = await generateContentWrapper(model, prompt);
         const response = result.response.text().trim();
         await prisma.aIMessage.createMany({
             data: [
@@ -117,8 +132,7 @@ export const AnalyzeRoute = async (req, res) => {
             "suggestions":[]
             }`;
         }
-        const activeModel = getModel(model);
-        const result = await activeModel.generateContent(prompt);
+        const result = await generateContentWrapper(model, prompt);
         const response = result.response.text().replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "").trim();
         return res.status(200).json({ message: response });
 
@@ -158,8 +172,7 @@ Return ONLY JSON:
  "suggestions":[]
 }`;
 
-        const activeModel = getModel(model);
-        const result = await activeModel.generateContent(prompt);
+        const result = await generateContentWrapper(model, prompt);
 
         const text = result.response.text()
             .replace(/^```(?:json)?\s*\n?/i, "")
@@ -199,8 +212,7 @@ Return ONLY JSON:
  "suggestions":[{ "category":"", "suggestion":"" }]
 }`;
 
-        const activeModel = getModel(model);
-        const result = await activeModel.generateContent(prompt);
+        const result = await generateContentWrapper(model, prompt);
 
         const text = result.response.text()
             .replace(/^```(?:json)?\s*\n?/i, "")
