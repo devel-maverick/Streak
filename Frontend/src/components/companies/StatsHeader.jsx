@@ -17,7 +17,7 @@ export default function StatsHeader({ stats }) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {/* Total */}
                 <div className="text-center">
                     <div className="text-3xl font-bold text-gray-900">{userStats.total}</div>

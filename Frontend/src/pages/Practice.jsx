@@ -161,7 +161,7 @@ export default function Practice() {
                 {/* Problems List */}
                 {!loading && !error && (
                     <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                        <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                             <div className="col-span-12 md:col-span-5">Title</div>
                             <div className="hidden md:block col-span-2 text-center">Rating (CF)</div>
                             <div className="hidden md:block col-span-3 text-center">Topics</div>
@@ -188,7 +188,7 @@ export default function Practice() {
 
                         {/* Pagination */}
                         <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
-                            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div className="flex flex-col sm:flex-row flex-1 items-center justify-between gap-3">
                                 <div>
                                     <p className="text-sm text-gray-700">
                                         Showing page <span className="font-medium">{page}</span> of <span className="font-medium">{totalPages}</span>

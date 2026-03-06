@@ -33,7 +33,7 @@ export default function Companies() {
                 {!loading && !error && (
                     <>
                         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                            <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-sm font-semibold text-gray-700">
+                            <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-sm font-semibold text-gray-700">
                                 <div className="col-span-5">Title</div>
                                 <div className="col-span-2 text-center">Difficulty</div>
                                 <div className="col-span-1 text-center">Acceptance</div>

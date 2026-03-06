@@ -78,7 +78,7 @@ export default function QuestionCard({ problem, showMetadata = true, context = '
             className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
         >
             <div className="grid grid-cols-12 gap-4 px-4 py-4 items-center">
-                <div className={`${showMetadata ? 'col-span-5' : 'col-span-12'} flex items-center gap-3`}>
+                <div className={`${showMetadata ? 'col-span-12 md:col-span-5' : 'col-span-12'} flex items-center gap-3`}>
                     <input
                         type="checkbox"
                         checked={!!isSolved}
@@ -157,7 +157,7 @@ export default function QuestionCard({ problem, showMetadata = true, context = '
 
                 {showMetadata && (
                     <>
-                        <div className="col-span-2 text-center">
+                        <div className="hidden md:block col-span-2 text-center">
                             {context === 'practice' ? (
                                 problem.platform === 'CODEFORCES' ? (
                                     <span className={`font-medium ${!problem.rating ? 'text-gray-500' :
