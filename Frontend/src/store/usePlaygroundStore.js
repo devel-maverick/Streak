@@ -32,7 +32,12 @@ export const usePlaygroundStore = create((set, get) => ({
                 input
             });
             set({ output: response.data, isRunning: false });
-            toast.success("Code executed successfully");
+            const { stderr, compile_output, status } = response.data;
+            if (stderr || compile_output || (status && status.id > 3)) {
+                toast.error("Code execution had errors");
+            } else {
+                toast.success("Code executed successfully");
+            }
             return response.data;
         } catch (error) {
             const errorMsg = error.response?.data?.message || "Execution failed";
