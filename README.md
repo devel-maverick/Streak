@@ -146,21 +146,10 @@ http://localhost:5173
 
 # 📸 Screenshots
 
-```
 <img width="1364" height="788" alt="Screenshot 2026-03-16 at 8 02 16 PM" src="https://github.com/user-attachments/assets/65b7ba4a-18c0-4b8d-b30e-c868ba562d5b" />
 <img width="1254" height="698" alt="Screenshot 2026-03-16 at 8 02 56 PM" src="https://github.com/user-attachments/assets/4ef1a934-ca77-49fc-8406-57d4713f528d" />
 <img width="911" height="796" alt="Screenshot 2026-03-16 at 8 03 45 PM" src="https://github.com/user-attachments/assets/25ec0b8d-a1aa-4d20-b26a-930e26db97f7" />
 
-```
-
-Examples
-
-- Problem solving interface  
-- Code editor  
-- Dashboard  
-- Streak tracking  
-
----
 
 # 🎯 Future Improvements
 
