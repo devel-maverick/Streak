@@ -110,7 +110,7 @@ npm run dev
 Backend runs on
 
 ```
-http://localhost:5000
+http://localhost:3000
 ```
 
 ---
