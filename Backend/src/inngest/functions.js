@@ -7,7 +7,7 @@ export const syncPlatformStatsJob = inngest.createFunction(
         concurrency: { limit: 1 },
     },
     {
-        cron: "0 * * * *", // Every hour
+        cron: "0 * * * *",
     },
     async ({ event, step }) => {
         console.log("[Inngest] Starting platform stats sync...");

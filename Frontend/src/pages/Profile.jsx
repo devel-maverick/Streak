@@ -87,201 +87,6 @@ export default function Profile() {
 
 
 
-    const ActivityHeatmap = ({ platform }) => {
-        const [calendarData, setCalendarData] = useState(null);
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(null);
-
-        useEffect(() => {
-            const fetchSubmissionData = async () => {
-                try {
-                    setLoading(true);
-                    setError(null);
-
-                    const response = await fetch(
-                        `http://localhost:3000/api/stats/submission-activity/${platform}`,
-                        { credentials: 'include' }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch submission data');
-                    }
-
-                    const data = await response.json();
-                    const convertedCalendar = {};
-                    Object.entries(data.calendar || {}).forEach(([timestamp, count]) => {
-                        const date = new Date(parseInt(timestamp) * 1000);
-                        const dateString = date.toISOString().split('T')[0];
-                        convertedCalendar[dateString] = count;
-                    });
-
-                    setCalendarData(convertedCalendar);
-                } catch (error) {
-                    console.error('Failed to fetch submission data:', error);
-                    setError(error.message);
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            fetchSubmissionData();
-        }, [platform]);
-
-        const generateHeatmapData = () => {
-            const data = [];
-            const today = new Date();
-
-            for (let i = 364; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                const dateString = date.toISOString().split('T')[0];
-
-                const count = calendarData?.[dateString] || 0;
-
-                data.push({
-                    date: dateString,
-                    count: count,
-                    level: count === 0 ? 0 : count <= 2 ? 1 : count <= 5 ? 2 : count <= 8 ? 3 : 4,
-                    platform: platform
-                });
-            }
-            return data;
-        };
-
-        if (loading) {
-            return (
-                <div className="flex items-center justify-center h-32">
-                    <div className="text-gray-500">Loading submission activity...</div>
-                </div>
-            );
-        }
-
-        if (error) {
-            return (
-                <div className="flex items-center justify-center h-32">
-                    <div className="text-red-500">Failed to load submission activity</div>
-                </div>
-            );
-        }
-
-        const heatmapData = generateHeatmapData();
-
-        const weeks = [];
-        let currentWeek = [];
-        const startDay = new Date(heatmapData[0].date).getDay();
-        for (let i = 0; i < startDay; i++) {
-            currentWeek.push(null);
-        }
-
-        heatmapData.forEach((day, index) => {
-            currentWeek.push(day);
-            if (currentWeek.length === 7) {
-                weeks.push(currentWeek);
-                currentWeek = [];
-            }
-        });
-
-        if (currentWeek.length > 0) {
-            while (currentWeek.length < 7) {
-                currentWeek.push(null);
-            }
-            weeks.push(currentWeek);
-        }
-
-        const getMonthLabels = () => {
-            const monthLabels = [];
-            let currentMonth = null;
-
-            weeks.forEach((week, weekIndex) => {
-                const firstDayOfWeek = week.find(d => d !== null);
-                if (!firstDayOfWeek) return;
-
-                const date = new Date(firstDayOfWeek.date);
-                const month = date.getMonth();
-                const year = date.getFullYear();
-                const monthKey = `${year}-${month}`;
-
-                if (monthKey !== currentMonth) {
-                    currentMonth = monthKey;
-                    monthLabels.push({
-                        weekIndex,
-                        label: date.toLocaleDateString('en-US', { month: 'short' })
-                    });
-                }
-            });
-
-            return monthLabels;
-        };
-
-        const monthLabels = getMonthLabels();
-
-        const colors = [
-            'bg-gray-200 dark:bg-gray-800',
-            'bg-green-200 dark:bg-green-900',
-            'bg-green-400 dark:bg-green-700',
-            'bg-green-600 dark:bg-green-500',
-            'bg-green-700 dark:bg-green-400'
-        ];
-
-        const dayLabels = ['Mon', 'Wed', 'Fri'];
-        const dayIndices = [1, 3, 5];
-
-        return (
-            <div className="flex gap-2">
-                <div className="flex flex-col gap-[3px] text-xs text-gray-500 pr-2" style={{ paddingTop: '20px' }}>
-                    {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => {
-                        const labelIndex = dayIndices.indexOf(dayIndex);
-                        return (
-                            <div key={dayIndex} className="h-[13px] flex items-center">
-                                {labelIndex !== -1 ? dayLabels[labelIndex] : ''}
-                            </div>
-                        );
-                    })}
-                </div>
-
-                <div className="flex-1 overflow-x-auto">
-                    <div className="relative mb-1" style={{ height: '16px' }}>
-                        {monthLabels.map((monthLabel, index) => (
-                            <div
-                                key={index}
-                                className="absolute text-xs text-gray-500"
-                                style={{
-                                    left: `${monthLabel.weekIndex * 16}px`,
-                                    whiteSpace: 'nowrap'
-                                }}
-                            >
-                                {monthLabel.label}
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="flex gap-[3px]">
-                        {weeks.map((week, weekIndex) => (
-                            <div key={weekIndex} className="flex flex-col gap-[3px]">
-                                {week.map((day, dayIndex) => (
-                                    <div
-                                        key={dayIndex}
-                                        className={`w-[13px] h-[13px] rounded-sm ${day ? colors[day.level] : 'bg-gray-100 dark:bg-gray-900'
-                                            }`}
-                                        title={day ? `${day.count} ${platform} submissions on ${day.date}` : ''}
-                                    />
-                                ))}
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-3 text-xs text-gray-600">
-                        <span>Less</span>
-                        {colors.map((color, i) => (
-                            <div key={i} className={`w-[13px] h-[13px] rounded-sm ${color}`} />
-                        ))}
-                        <span>More</span>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
     const PlatformList = () => {
         const platformStats = {
             leetcode: user?.solvedLeetcode || 0,
@@ -373,10 +178,6 @@ export default function Profile() {
                             </div>
                         </div>
 
-                        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                            <h3 className="font-bold mb-4 text-gray-900">Submission Activity</h3>
-                            <ActivityHeatmap platform="leetcode" />
-                        </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
@@ -467,10 +268,7 @@ export default function Profile() {
                             </div>
                         </div>
 
-                        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                            <h3 className="font-bold mb-4 text-gray-900">Submission Activity</h3>
-                            <ActivityHeatmap platform="codeforces" />
-                        </div>
+
                     </>
                 );
 
@@ -497,10 +295,7 @@ export default function Profile() {
                             </div>
                         </div>
 
-                        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                            <h3 className="font-bold mb-4 text-gray-900">Submission Activity</h3>
-                            <ActivityHeatmap platform="codechef" />
-                        </div>
+
 
                         <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 text-center">
                             <p className="text-gray-800">CodeChef detailed stats integration coming soon!</p>

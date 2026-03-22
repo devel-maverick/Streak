@@ -90,21 +90,10 @@ model User {
   solvedProblems      SolvedProblem[]
   codeDrafts          CodeDraft[]
   aiMessages          AIMessage[]
-  submissionActivity  SubmissionActivity[]
+
 }
 
-model SubmissionActivity {
-  id          String   @id @default(uuid())
-  userId      String
-  platform    Platform
-  date        DateTime
-  count       Int      @default(1)
-  
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@unique([userId, platform, date])
-  @@index([userId, platform])
-}
+
 
 model Problem{
   id                 String    @id @default(uuid())
