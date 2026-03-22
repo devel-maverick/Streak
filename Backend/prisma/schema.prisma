@@ -28,11 +28,7 @@ enum Difficulty{
   MEDIUM
   HARD
 }
-enum Phase{
-  BEFORE
-  CODING
-  ENDED
-}
+
 
 enum AIMessageRole {
   user
@@ -147,20 +143,6 @@ model SolvedProblem{
 }
 
 
-model Contest{
-  id                 String    @id @default(uuid())
-  title              String
-  platform           Platform
-  contestId          String
-  startTime          DateTime
-  endTime            DateTime
-  duration           Int
-  phase              Phase
-  url                String
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  @@unique([platform,contestId])
-}
 
 
 

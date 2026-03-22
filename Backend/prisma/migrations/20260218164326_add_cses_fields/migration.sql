@@ -1,0 +1,2 @@
+-- This migration was applied directly to the database
+-- Restoring empty migration file to fix migration history

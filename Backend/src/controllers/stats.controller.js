@@ -16,7 +16,6 @@ export const fetchLeetCodeStats = async (username) => {
                     profile {
                         ranking
                     }
-                    submissionCalendar
                 }
                 userContestRanking(username: $username) {
                     rating
@@ -38,13 +37,6 @@ export const fetchLeetCodeStats = async (username) => {
         const contestRanking = response.data.data.userContestRanking;
         const stats = data.submitStats.acSubmissionNum;
 
-        let submissionCalendar = {};
-        try {
-            submissionCalendar = JSON.parse(data.submissionCalendar || '{}');
-        } catch (e) {
-            console.error('Failed to parse submission calendar:', e);
-        }
-
         return {
             username,
             totalSolved: stats.find(s => s.difficulty === 'All')?.count || 0,
@@ -52,8 +44,7 @@ export const fetchLeetCodeStats = async (username) => {
             mediumSolved: stats.find(s => s.difficulty === 'Medium')?.count || 0,
             hardSolved: stats.find(s => s.difficulty === 'Hard')?.count || 0,
             ranking: data.profile.ranking || 0,
-            rating: contestRanking ? Math.round(contestRanking.rating) : 0,
-            submissionCalendar: submissionCalendar
+            rating: contestRanking ? Math.round(contestRanking.rating) : 0
         };
     } catch (error) {
         console.error(`LeetCode fetch error for ${username}:`, error.message);
@@ -74,18 +65,11 @@ export const fetchCodeforcesStats = async (username) => {
         const submissionsRes = await axios.get(`https://codeforces.com/api/user.status?handle=${username}&from=1&count=10000`);
 
         let solvedProblems = new Set();
-        let submissionCalendar = {};
 
         if (submissionsRes.data.status === 'OK') {
             submissionsRes.data.result.forEach(submission => {
                 if (submission.verdict === 'OK') {
                     solvedProblems.add(`${submission.problem.contestId}-${submission.problem.index}`);
-
-                    const date = new Date(submission.creationTimeSeconds * 1000);
-                    date.setUTCHours(0, 0, 0, 0);
-                    const timestamp = Math.floor(date.getTime() / 1000).toString();
-
-                    submissionCalendar[timestamp] = (submissionCalendar[timestamp] || 0) + 1;
                 }
             });
         }
@@ -95,8 +79,7 @@ export const fetchCodeforcesStats = async (username) => {
             rating: user.rating || 0,
             maxRating: user.maxRating || 0,
             rank: user.rank || 'unrated',
-            totalSolved: solvedProblems.size,
-            submissionCalendar: submissionCalendar
+            totalSolved: solvedProblems.size
         };
     } catch (error) {
         console.error(`Codeforces fetch error for ${username}:`, error.message);
@@ -279,21 +262,6 @@ export const syncUserStats = async (userId) => {
     } catch (error) {
         console.error('Sync user stats error:', error);
         throw error;
-    }
-};
-
-export const triggerUserSync = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const result = await syncUserStats(userId);
-
-        res.json({
-            message: 'Stats synced successfully',
-            stats: result.updates
-        });
-    } catch (error) {
-        console.error('Trigger sync error:', error);
-        res.status(500).json({ message: 'Failed to sync stats' });
     }
 };
 
