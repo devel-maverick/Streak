@@ -9,7 +9,4 @@ export const useUIStore = create((set) => ({
 
     openSignUp: () => set({ isSignUpOpen: true, isSignInOpen: false }),
     closeSignUp: () => set({ isSignUpOpen: false }),
-
-    toggleSignIn: () => set((state) => ({ isSignInOpen: !state.isSignInOpen })),
-    toggleSignUp: () => set((state) => ({ isSignUpOpen: !state.isSignUpOpen })),
 }));

@@ -14,11 +14,7 @@ export const getPracticeProblems = async (req, res) => {
         const where = {};
 
         if (search) {
-            where.OR = [
-                { title: { contains: search, mode: "insensitive" } },
-                { company: { contains: search, mode: "insensitive" } },
-                { topics: { hasSome: [search, search.toLowerCase(), search.toUpperCase(), search.charAt(0).toUpperCase() + search.slice(1)] } }
-            ];
+            where.title = { contains: search, mode: "insensitive" };
         }
 
         if (platform) {
@@ -53,13 +49,11 @@ export const getPracticeProblems = async (req, res) => {
             total: 0,
             codeforces: 0,
             cses: 0,
-            leetcode: 0
         };
 
         statsGroup.forEach(item => {
             if (item.platform === 'CODEFORCES') stats.codeforces = item._count.platform;
             if (item.platform === 'CSES') stats.cses = item._count.platform;
-            if (item.platform === 'LEETCODE') stats.leetcode = item._count.platform;
         });
         stats.total = stats.codeforces + stats.cses;
 
@@ -102,69 +96,6 @@ export const getPracticeProblems = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-
-
-export const getById = async (req, res) => {
-    try {
-        const problem = await prisma.problem.findUnique({
-            where: { id: req.params.id },
-        });
-
-        if (!problem) {
-            return res.status(404).json({ message: "Problem not found" });
-        }
-
-        res.json(problem);
-    } catch (err) {
-        res.status(500).json({ message: "Error fetching problem" });
-    }
-};
-
-
-export const getPracticeByPlatform = async (req, res) => {
-    try {
-        const { platform } = req.params;
-        let { limit, page } = req.query;
-
-        page = parseInt(page);
-        if (!page || page < 1) page = 1;
-
-        limit = parseInt(limit);
-        if (!limit || limit < 1) limit = 10;
-        if (limit > 50) limit = 50;
-
-        const skip = (page - 1) * limit;
-
-        const where = {
-            platform,
-            companies: { isEmpty: true },
-        };
-
-        const problems = await prisma.problem.findMany({
-            where,
-            skip,
-            take: limit,
-            orderBy: { createdAt: "desc" },
-        });
-
-        const total = await prisma.problem.count({ where });
-
-        res.json({
-            data: problems,
-            meta: {
-                page,
-                limit,
-                total,
-                totalPages: Math.ceil(total / limit),
-            },
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Failed to fetch practice problems" });
-    }
-};
-
-
 
 
 

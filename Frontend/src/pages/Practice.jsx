@@ -162,10 +162,9 @@ export default function Practice() {
                 {!loading && !error && (
                     <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
                         <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            <div className="col-span-12 md:col-span-5">Title</div>
+                            <div className="col-span-12 md:col-span-7">Title</div>
                             <div className="hidden md:block col-span-2 text-center">Rating (CF)</div>
-                            <div className="hidden md:block col-span-3 text-center">Topics</div>
-                            <div className="hidden md:block col-span-2 text-center">Progress</div>
+                            <div className="hidden md:block col-span-3 text-center">Progress</div>
                         </div>
 
                         {/* Problems */}

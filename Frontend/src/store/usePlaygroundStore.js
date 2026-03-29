@@ -20,9 +20,6 @@ export const usePlaygroundStore = create((set, get) => ({
     setCode: (code) => set({ code }),
     setInput: (input) => set({ input }),
 
-    checkSubscription: () => {
-    },
-
     runCode: async (code, language, input) => {
         set({ isRunning: true, error: null, output: null });
         try {

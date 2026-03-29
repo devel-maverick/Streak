@@ -1,7 +1,5 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import useCompanyStore from './useCompanyStore';
-
 const usePracticeStore = create((set, get) => ({
     problems: [],
     loading: false,
@@ -14,7 +12,6 @@ const usePracticeStore = create((set, get) => ({
         total: 0,
         codeforces: 0,
         cses: 0,
-        leetcode: 0
     },
     userSolvedCounts: {
         total: 0,

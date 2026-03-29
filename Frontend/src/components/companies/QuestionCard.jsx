@@ -78,7 +78,7 @@ export default function QuestionCard({ problem, showMetadata = true, context = '
             className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
         >
             <div className="grid grid-cols-12 gap-4 px-4 py-4 items-center">
-                <div className={`${showMetadata ? 'col-span-12 md:col-span-5' : 'col-span-12'} flex items-center gap-3`}>
+                <div className={`${showMetadata ? (context === 'practice' ? 'col-span-12 md:col-span-7' : 'col-span-12 md:col-span-5') : 'col-span-12'} flex items-center gap-3`}>
                     <input
                         type="checkbox"
                         checked={!!isSolved}
@@ -113,7 +113,7 @@ export default function QuestionCard({ problem, showMetadata = true, context = '
                                     </span>
                                 )}
 
-                                {problem.topics && problem.topics.length > 0 && (
+                                {context !== 'practice' && problem.topics && problem.topics.length > 0 && (
                                     <>
                                         {problem.topics.slice(0, 3).map((topic, index) => (
                                             <span
@@ -155,32 +155,35 @@ export default function QuestionCard({ problem, showMetadata = true, context = '
                     </div>
                 </div>
 
-                {showMetadata && (
+                {showMetadata && context === 'practice' && (
                     <>
                         <div className="hidden md:block col-span-2 text-center">
-                            {context === 'practice' ? (
-                                problem.platform === 'CODEFORCES' ? (
-                                    <span className={`font-medium ${!problem.rating ? 'text-gray-500' :
-                                        problem.rating < 1200 ? 'text-green-600' :
-                                            problem.rating < 1600 ? 'text-yellow-600' :
-                                                'text-red-600'
-                                        }`}>
-                                        {problem.rating || '-'}
-                                    </span>
-                                ) : (
-                                    <span className={`font-medium ${!problem.rating ? 'text-gray-500' :
-                                        problem.rating < 1200 ? 'text-green-600' :
-                                            problem.rating < 1600 ? 'text-yellow-600' :
-                                                'text-red-600'
-                                        }`}>
-                                        {problem.rating || '-'}
-                                    </span>
-                                )
-                            ) : (
-                                <div className={`text-sm font-semibold ${getDifficultyColor(problem.difficulty)}`}>
-                                    {formatDifficulty(problem.difficulty)}
-                                </div>
-                            )}
+                            <span className={`font-medium ${!problem.rating ? 'text-gray-500' :
+                                problem.rating < 1200 ? 'text-green-600' :
+                                    problem.rating < 1600 ? 'text-yellow-600' :
+                                        'text-red-600'
+                                }`}>
+                                {problem.rating || '-'}
+                            </span>
+                        </div>
+
+                        <div className="hidden md:block col-span-3">
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div
+                                    className={`h-2 rounded-full transition-all duration-300 ${isSolved ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                                    style={{ width: isSolved ? '100%' : '0%' }}
+                                />
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {showMetadata && context !== 'practice' && (
+                    <>
+                        <div className="hidden md:block col-span-2 text-center">
+                            <div className={`text-sm font-semibold ${getDifficultyColor(problem.difficulty)}`}>
+                                {formatDifficulty(problem.difficulty)}
+                            </div>
                         </div>
 
                         <div className="hidden md:block col-span-1 text-center">
