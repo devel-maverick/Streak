@@ -30,7 +30,7 @@ export const AIChat = async (req, res) => {
         if (!message) {
             return res.status(400).json({ message: "Message is required" });
         }
-        let problemBody = ""
+        let problemBody = "";
         if (problemId) {
             const problem = await prisma.problem.findUnique({
                 where: {

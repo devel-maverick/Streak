@@ -115,7 +115,7 @@ export default function QuestionCard({ problem, showMetadata = true, context = '
 
                                 {context !== 'practice' && problem.topics && problem.topics.length > 0 && (
                                     <>
-                                        {problem.topics.slice(0, 3).map((topic, index) => (
+                                        {problem.topics.slice(0, 4).map((topic, index) => (
                                             <span
                                                 key={index}
                                                 className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded"
@@ -123,23 +123,6 @@ export default function QuestionCard({ problem, showMetadata = true, context = '
                                                 {topic}
                                             </span>
                                         ))}
-                                        {problem.topics.length > 3 && (
-                                            <div className="relative group">
-                                                <span className="px-2 py-0.5 text-gray-500 text-xs cursor-help hover:text-gray-700 border-b border-dotted border-gray-400">
-                                                    +{problem.topics.length - 3} more
-                                                </span>
-                                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg pointer-events-none">
-                                                    <div className="flex flex-wrap gap-1.5 justify-center">
-                                                        {problem.topics.slice(3).map((topic, idx) => (
-                                                            <span key={idx} className="bg-gray-700 px-1.5 py-0.5 rounded">
-                                                                {topic}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
-                                                </div>
-                                            </div>
-                                        )}
                                     </>
                                 )}
                             </div>
