@@ -159,48 +159,21 @@ export const googleCallback = async (req, res) => {
 };
 
 
-import { syncUserStats } from "./stats.controller.js";
-
 export const updateProfile = async (req, res) => {
     try {
         const userId = req.user.id;
-        const {
-            name,
-            codeforcesUsername,
-            leetcodeUsername,
-            codechefUsername,
-            atcoderUsername,
-            csesUsername,
-            githubUrl,
-            linkedinUrl
-        } = req.body;
+        const { name, githubUrl, linkedinUrl } = req.body;
 
-        // First update the profile details
-        await prisma.user.update({
+        const updatedUser = await prisma.user.update({
             where: { id: userId },
             data: {
                 name,
-                codeforcesUsername,
-                leetcodeUsername,
-                codechefUsername,
-                atcoderUsername,
-                csesUsername,
                 githubUrl,
                 linkedinUrl
             }
         });
-        try {
-            console.log(`[Profile Update] Triggering stats sync for user ${userId}`);
-            await syncUserStats(userId);
-        } catch (syncError) {
-            console.error('[Profile Update] Stats sync failed:', syncError.message);
-        }
 
-        const finalUser = await prisma.user.findUnique({
-            where: { id: userId }
-        });
-
-        res.json({ message: "Profile updated successfully", user: finalUser });
+        res.json({ message: "Profile updated successfully", user: updatedUser });
     } catch (err) {
         console.error("Profile Update Error:", err.message);
         res.status(500).json({ message: "Failed to update profile" });

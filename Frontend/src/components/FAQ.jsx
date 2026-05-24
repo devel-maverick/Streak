@@ -5,7 +5,7 @@ import { Plus, Minus } from 'lucide-react';
 const faqs = [
     {
         question: "How does Streak track my progress?",
-        answer: "Streak syncs with your coding profiles (LeetCode, Codeforces, etc.) to automatically track your solved problems and maintain your daily consistency."
+        answer: "Streak helps you track your solved problems and maintain your daily coding consistency through our practice and company problem sets."
     },
     {
         question: "Is Streak free to use?",
@@ -17,7 +17,7 @@ const faqs = [
     },
     {
         question: "How often is the data updated?",
-        answer: "Data is synced in real-time or periodically depending on the platform API limits. You can also manually trigger a sync from your profile page."
+        answer: "Problem data and contest information are updated regularly to ensure you always have the latest content."
     },
     {
         question: "Do you support custom problem lists?",

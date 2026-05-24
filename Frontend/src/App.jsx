@@ -4,7 +4,6 @@ import Home from './pages/Home'
 import Companies from './pages/Companies'
 import Contest from './pages/Contest'
 import Payment from './pages/Payment'
-import Profile from './pages/Profile'
 import Playground from './pages/PlayGround'
 import Practice from './pages/Practice'
 import OAuthCallback from './pages/OAuthSuccess'
@@ -36,7 +35,6 @@ export default function App() {
           <Route path="/companies" element={<Companies />} />
           <Route path="/contest" element={<Contest />} />
           <Route path="/payment" element={<Payment />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/playground" element={<Playground />} />
         </Routes>
         <Toaster />

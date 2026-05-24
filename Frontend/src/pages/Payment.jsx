@@ -51,7 +51,7 @@ export default function Payment() {
                             setTimeout(() => {
                                 checkAuth();
                                 setLoading(false);
-                                navigate('/profile');
+                                navigate('/');
                             }, 2000);
                         } else {
                             toast.error("Payment verification failed");

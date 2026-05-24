@@ -1,6 +1,6 @@
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
-import { LogOut, User, Menu, X } from 'lucide-react';
+import { LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
@@ -53,7 +53,13 @@ export default function Navbar() {
                         )}
                         {user && (
                             <>
-                                <button><Link to="/profile"><User /></Link></button>
+                                <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
+                                    {user.avatar ? (
+                                        <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-sm font-semibold text-gray-700">{user.name?.charAt(0)}</span>
+                                    )}
+                                </div>
                                 <button onClick={logout} className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 flex items-center gap-2"><LogOut size={18} /> Log Out</button>
                             </>
                         )}
@@ -83,7 +89,16 @@ export default function Navbar() {
                             )}
                             {user && (
                                 <>
-                                    <Link to="/profile" className="flex items-center gap-2 text-gray-600 hover:text-black py-2" onClick={() => setMobileMenuOpen(false)}><User size={18} /> Profile</Link>
+                                    <div className="flex items-center gap-2 py-2">
+                                        <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
+                                            {user.avatar ? (
+                                                <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <span className="text-sm font-semibold text-gray-700">{user.name?.charAt(0)}</span>
+                                            )}
+                                        </div>
+                                        <span className="text-gray-700 font-medium">{user.name}</span>
+                                    </div>
                                     <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="w-full bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 flex items-center justify-center gap-2"><LogOut size={18} /> Log Out</button>
                                 </>
                             )}
